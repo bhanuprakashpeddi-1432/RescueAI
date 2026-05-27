@@ -65,3 +65,22 @@ Sends an operations question to the RescueAI command assistant.
 ```
 
 The AI endpoints require `OPENAI_API_KEY` and use `OPENAI_MODEL` when supplied.
+
+## Simulated Real-Time Alerts
+
+The API server also starts a Socket.IO stream for development dashboard alerts. Connected clients receive an
+`emergency-alert` event every few seconds with a simulated disaster notification:
+
+```json
+{
+  "id": "SIM-0001",
+  "severity": "Critical",
+  "title": "Rapid river rise detected near occupied housing",
+  "location": "River Ward Sector 3",
+  "action": "Dispatch evacuation and water rescue teams",
+  "createdAt": "2026-05-26T09:00:00.000Z",
+  "simulated": true
+}
+```
+
+Set `VITE_SOCKET_URL` in the frontend environment if the browser should connect to a non-default API host.

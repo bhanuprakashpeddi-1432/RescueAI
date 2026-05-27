@@ -18,7 +18,9 @@
     "openai": "^4.104.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

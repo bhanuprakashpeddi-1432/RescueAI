@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { io } from "socket.io-client";
+import EmergencyChat from "./components/EmergencyChat.jsx";
 import IncidentAnalysis from "./components/IncidentAnalysis.jsx";
 import RescueMap from "./components/RescueMap.jsx";
 
@@ -11,7 +13,7 @@ const navigation = [
   { name: "Analytics", icon: "chart" },
 ];
 
-const metrics = [
+const baseMetrics = [
   {
     title: "Active Incidents",
     value: "24",
@@ -46,8 +48,9 @@ const metrics = [
   },
 ];
 
-const alerts = [
+const initialAlerts = [
   {
+    id: "alert-initial-1",
     severity: "Critical",
     time: "02 min ago",
     title: "Flash flood probability increased to 91%",
@@ -55,6 +58,7 @@ const alerts = [
     action: "Evacuation route recommended",
   },
   {
+    id: "alert-initial-2",
     severity: "High",
     time: "08 min ago",
     title: "Hospital capacity approaching threshold",
@@ -62,6 +66,7 @@ const alerts = [
     action: "Redirect ambulance intake",
   },
   {
+    id: "alert-initial-3",
     severity: "Medium",
     time: "17 min ago",
     title: "Shelter supply projection revised",
@@ -69,6 +74,7 @@ const alerts = [
     action: "Food restock in 6 hours",
   },
   {
+    id: "alert-initial-4",
     severity: "Info",
     time: "26 min ago",
     title: "Drone survey imagery processed",
@@ -76,6 +82,8 @@ const alerts = [
     action: "No new structural damage",
   },
 ];
+
+const socketUrl = import.meta.env.VITE_SOCKET_URL ?? import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
 
 const incidents = [
   {
@@ -455,7 +463,7 @@ function HospitalPanel() {
   );
 }
 
-function AlertsPanel() {
+function AlertsPanel({ alerts, connected, latestAlertId }) {
   return (
     <section className="rounded-2xl border border-slate-800/90 bg-slate-900/60 shadow-panel">
       <div className="flex items-center justify-between border-b border-slate-800/80 px-5 py-4">
@@ -463,17 +471,26 @@ function AlertsPanel() {
           <h2 className="font-semibold text-white">Live AI Alerts</h2>
           <p className="mt-1 text-xs text-slate-400">Priority intelligence feed</p>
         </div>
-        <span className="flex items-center gap-2 rounded-full bg-rose-500/10 px-3 py-1.5 text-xs font-medium text-rose-300">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-rose-400" />
-          Live
+        <span
+          className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${
+            connected ? "bg-emerald-500/10 text-emerald-300" : "bg-amber-500/10 text-amber-300"
+          }`}
+        >
+          <span
+            className={`h-2 w-2 rounded-full ${connected ? "animate-pulse bg-emerald-400" : "bg-amber-400"}`}
+          />
+          {connected ? "Streaming" : "Connecting"}
         </span>
       </div>
       <div className="divide-y divide-slate-800/70 px-5">
         {alerts.map((alert) => (
-          <article key={alert.title} className="py-4">
+          <article
+            key={alert.id ?? alert.title}
+            className={`py-4 ${alert.id === latestAlertId ? "alert-arrival" : ""}`}
+          >
             <div className="flex items-center justify-between gap-3">
               <SeverityBadge level={alert.severity} />
-              <time className="text-xs text-slate-500">{alert.time}</time>
+              <time className="text-xs text-slate-500">{alert.time ?? "Just now"}</time>
             </div>
             <h3 className="mt-3 text-sm font-medium leading-5 text-slate-100">{alert.title}</h3>
             <p className="mt-1.5 text-xs text-slate-400">{alert.location}</p>
@@ -514,6 +531,51 @@ function DispatchPanel() {
 
 function App() {
   const [navigationOpen, setNavigationOpen] = useState(false);
+  const [alerts, setAlerts] = useState(initialAlerts);
+  const [alertStreamConnected, setAlertStreamConnected] = useState(false);
+  const [latestAlertId, setLatestAlertId] = useState("");
+
+  useEffect(() => {
+    const socket = io(socketUrl, {
+      transports: ["websocket", "polling"],
+    });
+
+    socket.on("connect", () => setAlertStreamConnected(true));
+    socket.on("disconnect", () => setAlertStreamConnected(false));
+    socket.on("emergency-alert", (alert) => {
+      setLatestAlertId(alert.id);
+      setAlerts((currentAlerts) => [
+        {
+          ...alert,
+          time: "Just now",
+        },
+        ...currentAlerts,
+      ].slice(0, 7));
+    });
+
+    return () => socket.disconnect();
+  }, []);
+
+  const dashboardMetrics = useMemo(
+    () =>
+      baseMetrics.map((metric) => {
+        if (metric.title !== "AI Alerts") {
+          return metric;
+        }
+
+        const actionRequired = alerts.filter(
+          (alert) => alert.severity === "Critical" || alert.severity === "High",
+        ).length;
+
+        return {
+          ...metric,
+          value: String(alerts.length),
+          detail: `${actionRequired} require action`,
+          trend: alertStreamConnected ? "Live stream active" : "Connecting...",
+        };
+      }),
+    [alerts, alertStreamConnected],
+  );
 
   return (
     <div className="flex min-h-screen text-slate-200">
@@ -536,7 +598,7 @@ function App() {
           </div>
 
           <section className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-            {metrics.map((metric) => (
+            {dashboardMetrics.map((metric) => (
               <StatCard key={metric.title} metric={metric} />
             ))}
           </section>
@@ -558,7 +620,12 @@ function App() {
               </div>
             </div>
             <div className="space-y-5">
-              <AlertsPanel />
+              <EmergencyChat />
+              <AlertsPanel
+                alerts={alerts}
+                connected={alertStreamConnected}
+                latestAlertId={latestAlertId}
+              />
               <DispatchPanel />
             </div>
           </div>
