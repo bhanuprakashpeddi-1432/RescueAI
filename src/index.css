@@ -87,10 +87,283 @@ button {
   animation: signal 1.6s ease-in-out infinite;
 }
 
+.rescue-map {
+  background: #08111d;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.rescue-map .leaflet-tile {
+  filter: saturate(0.68) brightness(0.8) contrast(1.06);
+}
+
+.rescue-map .leaflet-control-zoom {
+  overflow: hidden;
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  box-shadow: none;
+}
+
+.rescue-map .leaflet-control-zoom a {
+  border-bottom-color: rgba(51, 65, 85, 0.9);
+  background: rgba(2, 6, 23, 0.9);
+  color: #cbd5e1;
+}
+
+.rescue-map .leaflet-control-zoom a:hover {
+  background: #172033;
+  color: #fff;
+}
+
+.rescue-map-marker {
+  background: transparent;
+  border: 0;
+}
+
+.map-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border: 2px solid rgba(226, 232, 240, 0.32);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.map-pin--flood {
+  background: #e11d48;
+  box-shadow: 0 0 0 7px rgba(225, 29, 72, 0.15), 0 0 20px rgba(244, 63, 94, 0.6);
+}
+
+.map-pin--shelter {
+  background: #0891b2;
+  box-shadow: 0 0 0 6px rgba(8, 145, 178, 0.15), 0 0 18px rgba(34, 211, 238, 0.5);
+}
+
+.map-pin--hospital {
+  background: #059669;
+  box-shadow: 0 0 0 6px rgba(5, 150, 105, 0.15), 0 0 18px rgba(52, 211, 153, 0.5);
+}
+
+.map-pin--sos {
+  background: #f97316;
+  box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.18), 0 0 24px rgba(251, 146, 60, 0.7);
+  animation: marker-pulse 1.7s ease-in-out infinite;
+}
+
+.rescue-map .leaflet-popup-content-wrapper,
+.rescue-map .leaflet-popup-tip {
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  background: #0b1323;
+  color: #e2e8f0;
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.55);
+}
+
+.rescue-map .leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  padding: 0;
+}
+
+.rescue-map .leaflet-popup-content {
+  width: 230px !important;
+  margin: 0;
+}
+
+.rescue-map .leaflet-popup-close-button {
+  top: 7px;
+  right: 7px;
+  color: #94a3b8;
+}
+
+.map-popup-content {
+  padding: 15px;
+}
+
+.map-popup-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-right: 14px;
+}
+
+.map-popup-type,
+.map-popup-status {
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.map-popup-type--flood {
+  background: rgba(244, 63, 94, 0.16);
+  color: #fda4af;
+}
+
+.map-popup-type--shelter {
+  background: rgba(6, 182, 212, 0.16);
+  color: #67e8f9;
+}
+
+.map-popup-type--hospital {
+  background: rgba(16, 185, 129, 0.16);
+  color: #6ee7b7;
+}
+
+.map-popup-type--sos {
+  background: rgba(249, 115, 22, 0.18);
+  color: #fdba74;
+}
+
+.map-popup-status {
+  background: rgba(30, 41, 59, 0.75);
+  color: #cbd5e1;
+}
+
+.map-popup-content h3 {
+  margin: 11px 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.map-popup-content dl {
+  margin: 0;
+}
+
+.map-popup-content dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(51, 65, 85, 0.65);
+  padding: 7px 0;
+  font-size: 11px;
+}
+
+.map-popup-content dt {
+  color: #64748b;
+}
+
+.map-popup-content dd {
+  margin: 0;
+  color: #e2e8f0;
+  font-weight: 500;
+  text-align: right;
+}
+
+.legend-point {
+  height: 8px;
+  width: 8px;
+  border-radius: 999px;
+}
+
+.legend-point--flood {
+  background: #f43f5e;
+}
+
+.legend-point--shelter {
+  background: #22d3ee;
+}
+
+.legend-point--hospital {
+  background: #34d399;
+}
+
+.legend-point--sos {
+  background: #fb923c;
+}
+
+@keyframes marker-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes analysis-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spark-glow {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.65;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes analysis-dot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.38;
+  }
+
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.analysis-enter {
+  animation: analysis-enter 0.34s ease both;
+}
+
+.analysis-orbit {
+  border-top-color: #22d3ee;
+  border-right-color: #22d3ee;
+  animation: orbit 1.2s linear infinite;
+}
+
+.analysis-spark {
+  animation: spark-glow 1.45s ease-in-out infinite;
+}
+
+.analysis-dot {
+  animation: analysis-dot 0.9s ease-in-out infinite;
+}
+
+.analysis-dot:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.analysis-dot:nth-child(3) {
+  animation-delay: 240ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stat-card,
   .stat-glow,
-  .live-dot {
+  .live-dot,
+  .map-pin--sos,
+  .analysis-enter,
+  .analysis-orbit,
+  .analysis-spark,
+  .analysis-dot {
     animation: none;
   }
 }

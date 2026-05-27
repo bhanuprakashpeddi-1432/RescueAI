@@ -1,0 +1,47 @@
+export const incidents = [
+  {
+    id: "INC-2401",
+    type: "Flash Flood",
+    title: "Mula-Mutha river overflow",
+    severity: "critical",
+    status: "active",
+    location: {
+      name: "North Valley District",
+      latitude: 18.543,
+      longitude: 73.87,
+    },
+    affectedPeople: 4800,
+    assignedUnits: 12,
+    updatedAt: "2026-05-26T08:31:00.000Z",
+  },
+  {
+    id: "INC-2402",
+    type: "Wildfire",
+    title: "Coastal ridge fire expansion",
+    severity: "high",
+    status: "active",
+    location: {
+      name: "Coastal Ridge Sector",
+      latitude: 18.509,
+      longitude: 73.843,
+    },
+    affectedPeople: 2100,
+    assignedUnits: 8,
+    updatedAt: "2026-05-26T08:24:00.000Z",
+  },
+  {
+    id: "INC-2403",
+    type: "Earthquake",
+    title: "Aftershock structural assessment",
+    severity: "medium",
+    status: "monitoring",
+    location: {
+      name: "Metro East Block 7",
+      latitude: 18.528,
+      longitude: 73.827,
+    },
+    affectedPeople: 740,
+    assignedUnits: 5,
+    updatedAt: "2026-05-26T08:14:00.000Z",
+  },
+];

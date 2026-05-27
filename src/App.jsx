@@ -1,4 +1,6 @@
 import { useState } from "react";
+import IncidentAnalysis from "./components/IncidentAnalysis.jsx";
+import RescueMap from "./components/RescueMap.jsx";
 
 const navigation = [
   { name: "Dashboard", icon: "grid", active: true },
@@ -453,67 +455,6 @@ function HospitalPanel() {
   );
 }
 
-function MapPanel() {
-  return (
-    <section className="overflow-hidden rounded-2xl border border-slate-800/90 bg-slate-900/60 shadow-panel">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 px-5 py-4">
-        <div>
-          <h2 className="font-semibold text-white">Incident Intelligence Map</h2>
-          <p className="mt-1 text-xs text-slate-400">Live geospatial risk monitoring</p>
-        </div>
-        <div className="flex items-center gap-3 text-xs text-slate-400">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-rose-400" /> Critical
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-amber-400" /> At Risk
-          </span>
-          <button type="button" className="rounded-lg bg-slate-800 px-3 py-2 text-slate-200">
-            Layers
-          </button>
-        </div>
-      </div>
-
-      <div className="relative h-[380px] overflow-hidden bg-[#0b1828] sm:h-[430px]">
-        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(51,65,85,.32)_1px,transparent_1px),linear-gradient(90deg,rgba(51,65,85,.32)_1px,transparent_1px)] [background-size:52px_52px]" />
-        <div className="absolute inset-x-[-20%] top-[45%] h-36 rotate-[-8deg] rounded-[100%] border border-cyan-900/40" />
-        <div className="absolute left-[12%] top-[20%] h-52 w-72 rounded-[44%] border border-slate-700/50 bg-slate-800/25" />
-        <div className="absolute right-[8%] top-[42%] h-32 w-64 rounded-[50%] border border-slate-700/50 bg-slate-800/25" />
-
-        <MapMarker className="left-[31%] top-[31%]" color="rose" label="Flood Zone A" />
-        <MapMarker className="left-[58%] top-[48%]" color="amber" label="Medical surge" />
-        <MapMarker className="left-[72%] top-[26%]" color="rose" label="Fire perimeter" />
-        <MapMarker className="left-[45%] top-[66%]" color="cyan" label="Relief hub" />
-
-        <div className="absolute bottom-5 left-5 rounded-xl border border-slate-700/70 bg-slate-950/75 px-4 py-3 backdrop-blur-md">
-          <p className="text-xs uppercase tracking-widest text-slate-500">Monitored Region</p>
-          <p className="mt-1 flex items-center gap-2 text-sm font-medium text-slate-100">
-            <Icon name="pin" className="h-4 w-4 text-cyan-300" />
-            Western Coastal Corridor
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function MapMarker({ className, color, label }) {
-  const markerColor = {
-    rose: "bg-rose-400 shadow-[0_0_0_8px_rgba(251,113,133,.12),0_0_22px_rgba(251,113,133,.8)]",
-    amber: "bg-amber-400 shadow-[0_0_0_8px_rgba(251,191,36,.12),0_0_22px_rgba(251,191,36,.8)]",
-    cyan: "bg-cyan-400 shadow-[0_0_0_8px_rgba(34,211,238,.12),0_0_22px_rgba(34,211,238,.8)]",
-  };
-
-  return (
-    <div className={`group absolute ${className}`}>
-      <span className={`block h-3.5 w-3.5 rounded-full ${markerColor[color]}`} />
-      <span className="absolute left-5 top-[-10px] whitespace-nowrap rounded-lg border border-slate-700 bg-slate-950/90 px-2.5 py-1.5 text-xs text-slate-200 opacity-0 transition group-hover:opacity-100">
-        {label}
-      </span>
-    </div>
-  );
-}
-
 function AlertsPanel() {
   return (
     <section className="rounded-2xl border border-slate-800/90 bg-slate-900/60 shadow-panel">
@@ -601,12 +542,16 @@ function App() {
           </section>
 
           <div className="mt-6">
+            <IncidentAnalysis />
+          </div>
+
+          <div className="mt-6">
             <IncidentPanel />
           </div>
 
           <div className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
             <div className="space-y-5">
-              <MapPanel />
+              <RescueMap />
               <div className="grid gap-5 md:grid-cols-2">
                 <ShelterPanel />
                 <HospitalPanel />
