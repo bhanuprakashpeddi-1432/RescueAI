@@ -82,7 +82,18 @@ export default function EmergencyChat() {
           context: { recentConversation: history, mode: "emergency-guidance" },
         }),
       });
-      const data = await res.json();
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(
+          res.ok
+            ? "Received an invalid response from the server."
+            : `Server returned ${res.status} with no details.`,
+        );
+      }
+
       if (!res.ok) throw new Error(data.error ?? "Guidance could not be generated.");
 
       setMessages((prev) => [...prev, {

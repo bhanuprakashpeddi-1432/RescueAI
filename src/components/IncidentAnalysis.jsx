@@ -132,7 +132,18 @@ export default function IncidentAnalysis() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ incidentText: incidentText.trim() }),
       });
-      const data = await res.json();
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(
+          res.ok
+            ? "Received an invalid response from the server."
+            : `Server returned ${res.status} with no details.`,
+        );
+      }
+
       if (!res.ok) throw new Error(data.error ?? "Analysis could not be completed.");
       setResult(data);
     } catch (e) {

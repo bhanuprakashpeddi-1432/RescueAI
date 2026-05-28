@@ -1,19 +1,29 @@
 import { defineConfig, createLogger } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Create a custom logger that filters out the benign "ws proxy socket error"
-// messages. These fire when a proxied WebSocket (socket.io) closes abruptly
-// during HMR or page reload and are completely harmless.
+// Create a custom logger that filters out benign proxy error messages.
+// These fire when proxied connections close abruptly during HMR, page reload,
+// or backend restart and are completely harmless.
 const logger = createLogger();
 const originalWarn = logger.warn.bind(logger);
 const originalError = logger.error.bind(logger);
 
+const NOISY_PROXY_PATTERNS = [
+  "ws proxy socket error",
+  "ws proxy error",
+  "http proxy error",
+];
+
+function isNoisyProxyMessage(msg) {
+  return NOISY_PROXY_PATTERNS.some((pattern) => msg.includes(pattern));
+}
+
 logger.warn = (msg, options) => {
-  if (msg.includes("ws proxy socket error")) return;
+  if (isNoisyProxyMessage(msg)) return;
   originalWarn(msg, options);
 };
 logger.error = (msg, options) => {
-  if (msg.includes("ws proxy socket error")) return;
+  if (isNoisyProxyMessage(msg)) return;
   originalError(msg, options);
 };
 
@@ -25,6 +35,12 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:5000",
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("error", (err) => {
+            if (["ECONNRESET", "ECONNABORTED", "ECONNREFUSED", "EPIPE"].includes(err.code)) return;
+            console.log("api proxy error", err);
+          });
+        },
       },
       "/socket.io": {
         target: "http://localhost:5000",

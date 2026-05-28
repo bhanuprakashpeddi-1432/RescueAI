@@ -2,17 +2,30 @@ import OpenAI from "openai";
 import { env } from "../config/env.js";
 
 let client;
+let cachedKey;
 
 function getClient() {
-  if (!env.openRouterApiKey) {
-    const error = new Error("OPENROUTER_API_KEY is not configured on the server.");
+  const key = env.openRouterApiKey;
+
+  // Reject missing or obvious placeholder keys with a clear message.
+  if (
+    !key ||
+    key === "your_openrouter_api_key_here" ||
+    key.startsWith("your_")
+  ) {
+    const error = new Error(
+      "OPENROUTER_API_KEY is not configured on the server. " +
+      "Set a valid API key in the .env file and restart the server.",
+    );
     error.statusCode = 503;
     throw error;
   }
 
-  if (!client) {
+  // Re-create the client if the key has changed (e.g. after .env hot-reload).
+  if (!client || cachedKey !== key) {
+    cachedKey = key;
     client = new OpenAI({
-      apiKey: env.openRouterApiKey,
+      apiKey: key,
       baseURL: "https://openrouter.ai/api/v1",
       defaultHeaders: {
         "HTTP-Referer": env.clientOrigin,
@@ -23,6 +36,7 @@ function getClient() {
 
   return client;
 }
+
 
 export async function analyzeIncident(incidentText) {
   const systemPrompt =
