@@ -1,4 +1,4 @@
-import { chatWithAssistant } from "../services/openaiService.js";
+import { chatWithAssistant } from "../services/openrouterService.js";
 
 export async function postChatAssistant(req, res, next) {
   const { message, context } = req.body;

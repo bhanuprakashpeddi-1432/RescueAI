@@ -1,36 +1,35 @@
 import { useState } from "react";
+import { apiBaseUrl } from "../config/api.js";
 
 const sampleIncident =
   "Flood water is rising rapidly in River Ward. Five residents are stranded on rooftops, " +
   "the main access road is submerged, and power lines are reported down near the evacuation point.";
 
 const severityClasses = {
-  low: "bg-emerald-500/10 text-emerald-300 ring-emerald-400/20",
-  moderate: "bg-amber-500/10 text-amber-300 ring-amber-400/20",
-  high: "bg-orange-500/10 text-orange-300 ring-orange-400/20",
-  critical: "bg-rose-500/10 text-rose-300 ring-rose-400/20",
+  low:      "bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/20 border border-emerald-500/20 text-glow-green",
+  moderate: "bg-amber-500/10  text-amber-300  ring-1 ring-amber-500/20 border border-amber-500/20 text-glow-amber",
+  high:     "bg-orange-500/10 text-orange-300 ring-1 ring-orange-500/20 border border-orange-500/20 text-glow-orange",
+  critical: "bg-red-500/10    text-red-300    ring-1 ring-red-500/20 border border-red-500/20 text-glow-red",
 };
 
 const urgencyClasses = {
-  routine: "text-cyan-300",
-  priority: "text-amber-300",
-  immediate: "text-orange-300",
-  "life-threatening": "text-rose-300",
+  routine:         "text-brand-400 text-glow-brand",
+  priority:        "text-amber-300 text-glow-amber",
+  immediate:       "text-orange-300 text-glow-orange",
+  "life-threatening": "text-red-300 text-glow-red",
 };
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
+const urgencyIcons = {
+  routine:         "🟢",
+  priority:        "🟡",
+  immediate:       "🟠",
+  "life-threatening": "🔴",
+};
 
 function SparkIcon({ className = "h-5 w-5" }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 2 9.8 9.8 2 12l7.8 2.2L12 22l2.2-7.8L22 12l-7.8-2.2L12 2Z" />
     </svg>
   );
@@ -38,20 +37,20 @@ function SparkIcon({ className = "h-5 w-5" }) {
 
 function AnalysisLoading() {
   return (
-    <div className="analysis-enter flex min-h-[318px] flex-col items-center justify-center rounded-xl border border-cyan-400/10 bg-cyan-500/[0.03] px-6 text-center">
-      <div className="relative flex h-16 w-16 items-center justify-center">
-        <span className="analysis-orbit absolute inset-0 rounded-full border border-cyan-400/30" />
-        <span className="absolute inset-2 rounded-full bg-cyan-500/10" />
-        <SparkIcon className="analysis-spark h-7 w-7 text-cyan-300" />
+    <div className="analysis-enter flex min-h-[320px] flex-col items-center justify-center rounded-xl border border-brand-300/20 bg-brand-50/5 px-6 text-center tech-corners tech-corners--high bg-grid-tech">
+      <div className="relative flex h-16 w-16 items-center justify-center mb-5">
+        <span className="analysis-orbit absolute inset-0 rounded-full border-2 border-transparent" />
+        <span className="absolute inset-2 rounded-full bg-brand-50 border border-brand-300/20" />
+        <SparkIcon className="analysis-spark h-7 w-7 text-brand-400 text-glow-brand" />
       </div>
-      <p className="mt-5 text-sm font-medium text-slate-100">Analyzing incident signals</p>
-      <p className="mt-2 max-w-xs text-xs leading-5 text-slate-400">
-        AI is evaluating disaster type, operational urgency, and response priorities.
+      <p className="text-[13px] font-extrabold text-white font-display tracking-widest uppercase">EVALUATING INCIDENT SIGNALS</p>
+      <p className="mt-2.5 max-w-xs text-[11.5px] leading-5 text-slate-400 font-medium">
+        AI is calculating hazard models, responder safety metrics, and tactical urgency profiles
       </p>
-      <div className="mt-5 flex gap-1.5">
-        <span className="analysis-dot h-1.5 w-1.5 rounded-full bg-cyan-300" />
-        <span className="analysis-dot h-1.5 w-1.5 rounded-full bg-cyan-300" />
-        <span className="analysis-dot h-1.5 w-1.5 rounded-full bg-cyan-300" />
+      <div className="mt-5 flex gap-2">
+        <span className="analysis-dot h-2 w-2 rounded-full bg-brand-400 shadow-[0_0_8px_#06b6d4]" />
+        <span className="analysis-dot h-2 w-2 rounded-full bg-brand-400 shadow-[0_0_8px_#06b6d4]" />
+        <span className="analysis-dot h-2 w-2 rounded-full bg-brand-400 shadow-[0_0_8px_#06b6d4]" />
       </div>
     </div>
   );
@@ -59,52 +58,54 @@ function AnalysisLoading() {
 
 function ResultPanel({ result }) {
   return (
-    <div className="analysis-enter min-h-[318px] rounded-xl border border-slate-800 bg-slate-950/35 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="analysis-enter min-h-[320px] rounded-xl border border-white/5 bg-surface-700/35 p-5 space-y-4 shadow-panel tech-corners">
+      {/* Top: type + severity */}
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/[0.03] pb-3.5">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-400">
-            AI Assessment
+          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-brand-400 mb-1 font-display">
+            ASSESSMENT LOG COMPLETE
           </p>
-          <h3 className="mt-2 text-lg font-semibold capitalize text-white">{result.disasterType}</h3>
+          <h3 className="text-[18px] font-extrabold capitalize text-white font-display tracking-tight text-glow-brand">{result.disasterType}</h3>
         </div>
-        <span
-          className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize ring-1 ring-inset ${
-            severityClasses[result.severity] ?? severityClasses.moderate
-          }`}
-        >
+        <span className={`rounded-full px-3 py-1 text-[10px] font-extrabold uppercase font-mono border ${
+          severityClasses[result.severity] ?? severityClasses.moderate
+        }`}>
           {result.severity} severity
         </span>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-lg bg-slate-900/75 p-3">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">Disaster Type</p>
-          <p className="mt-2 text-sm font-medium capitalize text-slate-100">{result.disasterType}</p>
+      {/* Metrics row */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-xl bg-white/[0.015] border border-white/5 p-3.5 hover:border-white/10 transition-colors">
+          <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-1.5 font-display">DISASTER MODEL</p>
+          <p className="text-[13px] font-bold capitalize text-slate-200 font-mono tracking-tight">{result.disasterType}</p>
         </div>
-        <div className="rounded-lg bg-slate-900/75 p-3">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">Urgency</p>
-          <p className={`mt-2 text-sm font-semibold capitalize ${urgencyClasses[result.urgency] ?? "text-slate-100"}`}>
-            {result.urgency}
+        <div className="rounded-xl bg-white/[0.015] border border-white/5 p-3.5 hover:border-white/10 transition-colors">
+          <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-1.5 font-display">URGENCY RATIO</p>
+          <p className={`text-[13px] font-extrabold capitalize font-mono tracking-tight ${urgencyClasses[result.urgency] ?? "text-slate-100"}`}>
+            {urgencyIcons[result.urgency] ?? ""} {result.urgency}
           </p>
         </div>
       </div>
 
-      <div className="mt-4 rounded-lg border border-cyan-400/10 bg-cyan-500/[0.04] p-4">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-400">
-          Recommended Action
+      {/* Recommended action */}
+      <div className="rounded-xl border border-brand-300/20 bg-brand-50/5 p-4 border-l-2 border-l-brand-400">
+        <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-brand-400 mb-2 font-display">
+          AI STRATEGIC COMMAND RECOMMENDED ACTION
         </p>
-        <p className="mt-2 text-sm leading-6 text-slate-200">{result.recommendedAction}</p>
+        <p className="text-[13.5px] leading-6 text-slate-200 font-medium">{result.recommendedAction}</p>
       </div>
 
+      {/* Resources */}
       {result.affectedResources?.length > 0 && (
-        <div className="mt-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Affected Resources
+        <div className="border-t border-white/[0.03] pt-3.5">
+          <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-slate-500 mb-2.5 font-display">
+            AFFECTED RESOURCING MATRIX
           </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {result.affectedResources.map((resource) => (
-              <span key={resource} className="rounded-full bg-slate-800 px-2.5 py-1 text-xs text-slate-300">
-                {resource}
+          <div className="flex flex-wrap gap-2">
+            {result.affectedResources.map((r) => (
+              <span key={r} className="rounded-full border border-white/8 bg-white/4 px-3 py-1.5 text-[10px] font-bold text-slate-300 font-mono border-white/10 hover:border-brand-500/20 hover:text-white transition-all">
+                {r}
               </span>
             ))}
           </div>
@@ -114,123 +115,112 @@ function ResultPanel({ result }) {
   );
 }
 
-function IncidentAnalysis() {
+export default function IncidentAnalysis() {
   const [incidentText, setIncidentText] = useState("");
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState("");
+  const [result, setResult]   = useState(null);
+  const [error, setError]     = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-
-    if (!incidentText.trim()) {
-      setError("Enter an emergency incident report before requesting analysis.");
-      return;
-    }
-
-    setError("");
-    setResult(null);
-    setLoading(true);
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!incidentText.trim()) { setError("Enter an emergency incident report before requesting analysis."); return; }
+    setError(""); setResult(null); setLoading(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/analyze-incident`, {
+      const res = await fetch(`${apiBaseUrl}/analyze-incident`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ incidentText: incidentText.trim() }),
       });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error ?? "Incident analysis could not be completed.");
-      }
-
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Analysis could not be completed.");
       setResult(data);
-    } catch (requestError) {
-      setError(
-        requestError.message === "Failed to fetch"
-          ? "The RescueAI analysis service is unavailable. Confirm the API server is running."
-          : requestError.message,
-      );
+    } catch (e) {
+      setError(e.message === "Failed to fetch"
+        ? "Analysis service link disconnected. Confirm backend API gateway stack."
+        : e.message);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-800/90 bg-slate-900/60 shadow-panel">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 px-5 py-4">
+    <section className="glass overflow-hidden rounded-2xl tech-corners shadow-panel">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 px-5 py-4 bg-surface-900/10">
         <div className="flex items-center gap-3">
-          <div className="rounded-xl bg-cyan-500/10 p-2.5 text-cyan-300 ring-1 ring-cyan-400/20">
-            <SparkIcon />
+          <div className="rounded-xl bg-brand-100 p-2.5 text-brand-400 ring-1 ring-brand-300 tech-corners">
+            <SparkIcon className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="font-semibold text-white">AI Incident Analysis</h2>
-            <p className="mt-1 text-xs text-slate-400">Convert emergency reports into response priorities</p>
+            <h2 className="text-[12px] font-extrabold text-white font-display tracking-wider uppercase">AI INCIDENT DIAGNOSTIC COMMAND</h2>
+            <p className="text-[11px] text-slate-500">Deconstruct raw emergency incident reports into tactical priorities</p>
           </div>
         </div>
-        <span className="rounded-full bg-slate-800/70 px-3 py-1.5 text-xs font-medium text-slate-300">
-          OpenAI-powered triage
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="status-pill status-pill--live">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            AI Ready
+          </div>
+          <span className="rounded-full border border-white/8 bg-white/4 px-3 py-1.5 text-[9px] font-extrabold text-slate-400 font-mono">
+            OpenRouter · Llama 3.3
+          </span>
+        </div>
       </div>
 
-      <div className="grid gap-5 p-5 lg:grid-cols-[minmax(280px,0.92fr)_minmax(340px,1.08fr)]">
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="incident-description" className="text-sm font-medium text-slate-200">
-            Emergency Incident Text
+      {/* Body */}
+      <div className="grid gap-5 p-5 lg:grid-cols-[minmax(260px,0.92fr)_minmax(320px,1.08fr)]">
+        {/* Input form */}
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <label htmlFor="incident-desc" className="text-[13px] font-bold text-slate-200 font-display uppercase tracking-wide">
+            Raw Incident Dispatch Log
           </label>
-          <p className="mt-1.5 text-xs text-slate-400">
-            Include location, hazards, impacted people, and access conditions where known.
+          <p className="mt-1 text-[11px] text-slate-500 font-medium">
+            Include coordinates, active fires/floods, casualty counts, and regional hazards.
           </p>
           <textarea
-            id="incident-description"
+            id="incident-desc"
             value={incidentText}
-            onChange={(event) => setIncidentText(event.target.value)}
+            onChange={(e) => setIncidentText(e.target.value)}
             maxLength={5000}
-            placeholder="Example: Flood water is rising near occupied homes..."
-            className="mt-4 h-44 w-full resize-none rounded-xl border border-slate-700/80 bg-slate-950/45 p-4 text-sm leading-6 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/10"
+            placeholder="Input raw transmission log feed here (e.g. flood waters rising in Sector 5, rooftops occupied...)"
+            className="mt-3 flex-1 min-h-[180px] w-full resize-none rounded-xl border border-white/8 bg-surface-700/50 p-4 text-[13px] leading-6 text-slate-100 outline-none placeholder:text-slate-600 focus:border-brand-300/60 focus:bg-surface-700/65 focus:shadow-glow transition-all backdrop-blur-sm font-medium"
           />
-          <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
-            <button
-              type="button"
-              className="text-cyan-300 transition hover:text-cyan-200"
-              onClick={() => {
-                setIncidentText(sampleIncident);
-                setError("");
-              }}
-            >
-              Use sample incident
+          <div className="mt-2.5 flex items-center justify-between text-[10px] text-slate-500 font-mono uppercase tracking-wider">
+            <button type="button" onClick={() => { setIncidentText(sampleIncident); setError(""); }}
+              className="text-brand-400 hover:text-brand-300 transition-colors font-bold">
+              Load Sample Dispatch
             </button>
-            <span>{incidentText.length}/5000</span>
+            <span className="font-semibold">{incidentText.length} / 5000</span>
           </div>
+
           {error && (
-            <p className="mt-4 rounded-lg border border-rose-400/20 bg-rose-500/10 px-3 py-2.5 text-xs leading-5 text-rose-200">
-              {error}
+            <p className="mt-3 rounded-xl border border-red-400/15 bg-red-500/8 px-3.5 py-3 text-[11px] leading-5 text-red-300 font-mono">
+              ⚠️ LOGGING FAULT: {error}
             </p>
           )}
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400 disabled:cursor-wait disabled:opacity-70"
-          >
+
+          <button type="submit" disabled={loading}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-brand-500 px-4 py-3.5 text-[12px] font-extrabold text-slate-950 transition hover:brightness-110 active:scale-95 disabled:cursor-wait disabled:opacity-70 shadow-glow font-display tracking-widest uppercase">
             <SparkIcon className="h-4 w-4" />
-            {loading ? "Analyzing Incident..." : "Analyze Incident"}
+            {loading ? "PROCESSING COGNITIVE STACK..." : "RUN INTEL ANALYSIS"}
           </button>
         </form>
 
+        {/* Result pane */}
         <div>
           {loading ? (
             <AnalysisLoading />
           ) : result ? (
             <ResultPanel result={result} />
           ) : (
-            <div className="flex min-h-[318px] flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-950/20 p-6 text-center">
-              <SparkIcon className="h-8 w-8 text-slate-600" />
-              <p className="mt-4 text-sm font-medium text-slate-300">Awaiting incident analysis</p>
-              <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500">
-                Submit an emergency report to generate disaster classification, urgency, and recommended
-                response action.
+            <div className="flex min-h-[320px] flex-col items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/[0.005] p-6 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 text-brand-400/50 ring-1 ring-brand-300/30 tech-corners">
+                <SparkIcon className="h-7 w-7" />
+              </div>
+              <p className="text-[13px] font-extrabold text-slate-400 font-display tracking-wider uppercase">AWAITING TRANSLATION DATA</p>
+              <p className="mt-2 max-w-xs text-[11.5px] leading-5 text-slate-600 font-medium">
+                Submit an active disaster transmission report to generate immediate severity classification, casualty triage level, and tactical deployment guidelines.
               </p>
             </div>
           )}
@@ -239,5 +229,3 @@ function IncidentAnalysis() {
     </section>
   );
 }
-
-export default IncidentAnalysis;

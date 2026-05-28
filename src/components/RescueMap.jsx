@@ -14,9 +14,9 @@ const mapLocations = [
     position: [18.543, 73.87],
     severity: "Critical",
     details: [
-      { label: "Risk", value: "92% inundation probability" },
-      { label: "Affected", value: "4,800 residents" },
-      { label: "Action", value: "Evacuation underway" },
+      { label: "Risk Factor", value: "92% Inundation Rate" },
+      { label: "Est. Impact", value: "4,800 Residents" },
+      { label: "Action Status", value: "Evacuation Phase B" },
     ],
     radius: 1250,
   },
@@ -28,9 +28,9 @@ const mapLocations = [
     position: [18.509, 73.843],
     severity: "High",
     details: [
-      { label: "Risk", value: "76% inundation probability" },
-      { label: "Affected", value: "2,100 residents" },
-      { label: "Action", value: "Routes restricted" },
+      { label: "Risk Factor", value: "76% Inundation Rate" },
+      { label: "Est. Impact", value: "2,100 Residents" },
+      { label: "Action Status", value: "Routes Restricted" },
     ],
     radius: 840,
   },
@@ -42,9 +42,9 @@ const mapLocations = [
     position: [18.528, 73.827],
     severity: "Open",
     details: [
-      { label: "Beds free", value: "482 / 900" },
-      { label: "Supplies", value: "72 hours secured" },
-      { label: "Contact", value: "Unit S-04" },
+      { label: "Bed Capacity", value: "482 / 900 Free" },
+      { label: "Rations Load", value: "72 Hours Secured" },
+      { label: "Comm Tag", value: "Relay S-04" },
     ],
   },
   {
@@ -55,9 +55,9 @@ const mapLocations = [
     position: [18.562, 73.831],
     severity: "Open",
     details: [
-      { label: "Beds free", value: "694 / 800" },
-      { label: "Supplies", value: "96 hours secured" },
-      { label: "Contact", value: "Unit S-12" },
+      { label: "Bed Capacity", value: "694 / 800 Free" },
+      { label: "Rations Load", value: "96 Hours Secured" },
+      { label: "Comm Tag", value: "Relay S-12" },
     ],
   },
   {
@@ -68,9 +68,9 @@ const mapLocations = [
     position: [18.519, 73.893],
     severity: "Near Capacity",
     details: [
-      { label: "Available beds", value: "18 / 240" },
-      { label: "ICU load", value: "92%" },
-      { label: "Routing", value: "Divert non-critical" },
+      { label: "Available Beds", value: "18 / 240 Free" },
+      { label: "ICU Loading", value: "92% Capacity" },
+      { label: "Route Command", value: "Divert Non-Critical" },
     ],
   },
   {
@@ -81,9 +81,9 @@ const mapLocations = [
     position: [18.554, 73.904],
     severity: "Operational",
     details: [
-      { label: "Available beds", value: "42 / 310" },
-      { label: "ICU load", value: "74%" },
-      { label: "Routing", value: "Receiving patients" },
+      { label: "Available Beds", value: "42 / 310 Free" },
+      { label: "ICU Loading", value: "74% Capacity" },
+      { label: "Route Command", value: "Receiving Patients" },
     ],
   },
   {
@@ -94,9 +94,9 @@ const mapLocations = [
     position: [18.536, 73.858],
     severity: "Urgent",
     details: [
-      { label: "People", value: "5 awaiting extraction" },
-      { label: "Last ping", value: "2 min ago" },
-      { label: "Response", value: "Boat unit dispatched" },
+      { label: "Targets", value: "5 Stranded Civilians" },
+      { label: "Signal age", value: "120 sec ago" },
+      { label: "Task Force", value: "Boat Squad 09 Active" },
     ],
   },
   {
@@ -107,9 +107,9 @@ const mapLocations = [
     position: [18.497, 73.876],
     severity: "Critical",
     details: [
-      { label: "People", value: "2 injured civilians" },
-      { label: "Last ping", value: "48 sec ago" },
-      { label: "Response", value: "Medic en route" },
+      { label: "Targets", value: "2 Injured Casualties" },
+      { label: "Signal age", value: "48 sec ago" },
+      { label: "Task Force", value: "Medic Unit 14 En-route" },
     ],
   },
 ];
@@ -151,15 +151,15 @@ function LocationPopup({ location }) {
   return (
     <div className="map-popup-content">
       <div className="map-popup-heading">
-        <span className={`map-popup-type map-popup-type--${location.type}`}>{location.label}</span>
-        <span className="map-popup-status">{location.severity}</span>
+        <span className={`map-popup-type map-popup-type--${location.type} font-display tracking-wider text-[9px] font-bold`}>{location.label}</span>
+        <span className="map-popup-status font-mono text-[9px] font-bold uppercase">{location.severity}</span>
       </div>
-      <h3>{location.name}</h3>
+      <h3 className="font-display tracking-tight text-[13px] font-bold">{location.name}</h3>
       <dl>
         {location.details.map((detail) => (
-          <div key={detail.label}>
-            <dt>{detail.label}</dt>
-            <dd>{detail.value}</dd>
+          <div key={detail.label} className="border-t border-white/5 py-1.5">
+            <dt className="text-slate-500 font-mono text-[9px] uppercase tracking-wider">{detail.label}</dt>
+            <dd className="font-semibold text-slate-300 font-mono text-[11px] text-right">{detail.value}</dd>
           </div>
         ))}
       </dl>
@@ -169,19 +169,22 @@ function LocationPopup({ location }) {
 
 function RescueMap() {
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-800/90 bg-slate-900/60 shadow-panel">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 px-5 py-4">
+    <section className="glass overflow-hidden rounded-2xl tech-corners shadow-panel scan-effect">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 px-5 py-4 bg-surface-900/10">
         <div>
-          <h2 className="font-semibold text-white">Incident Intelligence Map</h2>
-          <p className="mt-1 text-xs text-slate-400">Live geospatial response tracking</p>
+          <h2 className="text-[12px] font-extrabold text-white font-display tracking-wider uppercase">GEOSPATIAL INTELLIGENCE MAP</h2>
+          <p className="mt-0.5 text-[11px] text-slate-500">Live geospatial telemetry and command division coordinate overlays</p>
         </div>
-        <span className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
-          <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
-          Live telemetry
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="status-pill status-pill--live">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Live tracking
+          </span>
+          <span className="hidden sm:block text-[10px] font-mono text-slate-500 uppercase">SYS TAG: SECTOR-04_GRID</span>
+        </div>
       </div>
 
-      <div className="relative h-[420px] bg-[#08111d] sm:h-[470px]">
+      <div className="relative h-[420px] sm:h-[480px]" style={{ background: "#05101c" }}>
         <MapContainer
           center={mapCenter}
           zoom={12}
@@ -200,10 +203,11 @@ function RescueMap() {
                   center={location.position}
                   radius={location.radius}
                   pathOptions={{
-                    color: "#fb7185",
+                    color: "#f43f5e",
                     fillColor: "#e11d48",
                     fillOpacity: 0.14,
                     weight: 1.5,
+                    dashArray: "6 4",
                   }}
                 />
               )}
@@ -216,23 +220,22 @@ function RescueMap() {
           ))}
         </MapContainer>
 
+        {/* Overlays */}
         <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-[400] flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="pointer-events-auto rounded-xl border border-slate-700/80 bg-slate-950/90 p-3 backdrop-blur-md">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Active Layers
-            </p>
-            <div className="flex flex-wrap gap-3">
+          <div className="pointer-events-auto rounded-xl border border-white/5 bg-surface-900/90 p-3.5 backdrop-blur-xl shadow-panel tech-corners">
+            <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500 font-display">TELEM LAYERS</p>
+            <div className="flex flex-wrap gap-3.5">
               {legend.map((item) => (
-                <span key={item.type} className="flex items-center gap-1.5 text-[11px] text-slate-300">
+                <span key={item.type} className="flex items-center gap-2 text-[11px] text-slate-300 font-medium font-mono">
                   <span className={`legend-point legend-point--${item.type}`} />
                   {item.label}
                 </span>
               ))}
             </div>
           </div>
-          <div className="pointer-events-auto hidden rounded-xl border border-slate-700/80 bg-slate-950/90 px-3 py-2 backdrop-blur-md sm:block">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">Map Sync</p>
-            <p className="mt-1 text-xs font-medium text-slate-200">Updated 12 sec ago</p>
+          <div className="pointer-events-auto hidden rounded-xl border border-white/5 bg-surface-900/90 px-4 py-3 backdrop-blur-xl sm:block shadow-panel tech-corners tech-corners--safe">
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500 font-display">RADAR STATUS</p>
+            <p className="mt-1 text-[11px] font-bold text-slate-300 font-mono tracking-tight uppercase">GPS SYNC ACTIVE · 12S</p>
           </div>
         </div>
       </div>

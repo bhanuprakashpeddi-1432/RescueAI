@@ -1,5 +1,5 @@
 import { createIncidentSummary, listIncidents } from "../services/incidentService.js";
-import { analyzeIncident } from "../services/openaiService.js";
+import { analyzeIncident } from "../services/openrouterService.js";
 
 export function getIncidents(req, res) {
   const { severity, status } = req.query;

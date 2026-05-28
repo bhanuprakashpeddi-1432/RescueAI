@@ -13,7 +13,7 @@ function readPort(value) {
 export const env = {
   port: readPort(process.env.PORT),
   clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
-  openAiApiKey: process.env.OPENAI_API_KEY,
-  openAiModel: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
+  openRouterApiKey: process.env.OPENROUTER_API_KEY,
+  openRouterModel: process.env.OPENROUTER_MODEL ?? "meta-llama/llama-3.3-70b-instruct",
   nodeEnv: process.env.NODE_ENV ?? "development",
 };

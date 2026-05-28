@@ -4,15 +4,19 @@
 
 1. Copy `.env.example` to `.env`.
 2. Set `OPENAI_API_KEY` on the server only.
-3. Start the API with `npm run dev:api` for development or `npm run start:api`.
+3. Start the full local application with `npm run dev`, or run only the API with `npm run dev:api`.
 
 The default API URL is `http://localhost:5000`.
+During frontend development, Vite proxies `/api` and `/socket.io` traffic to the API to avoid browser cross-origin errors.
 
 ## Routes
 
 ### `GET /health`
 
 Returns service health and whether OpenAI configuration is present.
+
+Routes are also available beneath the frontend-friendly `/api` prefix, for example `GET /api/health` is
+served through the Vite proxy in development.
 
 ### `GET /incidents`
 
