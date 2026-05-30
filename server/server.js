@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { startAlertSimulator } from "./services/alertSimulator.js";
+import { setSocketIo } from "./controllers/agentController.js";
 
 const server = createServer(app);
 const io = new Server(server, {
@@ -18,6 +19,9 @@ io.on("connection", (socket) => {
     message: "Connected to RescueAI simulated emergency alert stream.",
   });
 });
+
+// Inject io into agent controller for mission broadcast
+setSocketIo(io);
 
 const stopAlertSimulator = startAlertSimulator(io);
 

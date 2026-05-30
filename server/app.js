@@ -8,6 +8,10 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import incidentRoutes from "./routes/incidentRoutes.js";
 import resourceRoutes from "./routes/resourceRoutes.js";
+import agentRoutes from "./routes/agentRoutes.js";
+import sitRepRoutes from "./routes/sitRepRoutes.js";
+import riskPredictionRoutes from "./routes/riskPredictionRoutes.js";
+import resourceAllocationRoutes from "./routes/resourceAllocationRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,9 +39,17 @@ app.get("/api/health", healthHandler);
 app.use(incidentRoutes);
 app.use(chatRoutes);
 app.use(resourceRoutes);
+app.use(agentRoutes);
+app.use(sitRepRoutes);
+app.use(riskPredictionRoutes);
+app.use(resourceAllocationRoutes);
 app.use("/api", incidentRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", resourceRoutes);
+app.use("/api", agentRoutes);
+app.use("/api", sitRepRoutes);
+app.use("/api", riskPredictionRoutes);
+app.use("/api", resourceAllocationRoutes);
 
 // Serve frontend assets if built
 const distPath = path.join(__dirname, "../dist");
