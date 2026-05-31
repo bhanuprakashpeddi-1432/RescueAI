@@ -14,7 +14,7 @@ export default function IncidentTable() {
         if (d.data && d.data.length > 0) {
           setIncidents(d.data.map(i => ({
             id: i.id,
-            type: `${i.category.toUpperCase()} - ${i.title || i.type}`,
+            type: `${(i.category || "General").toUpperCase()} - ${i.title || i.type}`,
             location: i.location?.name || "Unknown",
             severity: i.severity,
             teams: i.assignedTeams?.length || 0,

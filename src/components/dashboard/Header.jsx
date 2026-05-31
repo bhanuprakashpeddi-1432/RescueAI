@@ -27,6 +27,9 @@ export default function Header({ onMenuClick, alertCount }) {
       </div>
 
       <div className="flex items-center gap-2.5">
+        <a href="/" className="hidden md:flex items-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3.5 py-1.5 backdrop-blur-sm transition-colors text-[11px] font-extrabold uppercase font-display">
+          <Icon name="arrow" className="h-4 w-4 rotate-180" /> Public Portal
+        </a>
         {/* Threat level */}
         <div className="hidden md:flex items-center gap-2 rounded-xl border border-red-500/25 bg-red-500/[0.04] px-3.5 py-1.5 backdrop-blur-sm tech-corners tech-corners--critical">
           <span className="h-1.5 w-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />

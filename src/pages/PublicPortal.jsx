@@ -49,7 +49,10 @@ export default function PublicPortal() {
             <ShieldAlert className="text-red-500 w-8 h-8" />
             <h1 className="text-xl font-bold tracking-wider font-display text-white">RESCUE<span className="text-red-500">AI</span> PUBLIC PORTAL</h1>
           </div>
-          <a href="/command" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Command Center Login</a>
+          <a href="/command" className="flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold tracking-wider rounded-lg text-sm transition-all shadow-glow hover:scale-105 active:scale-95">
+            Command Center
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          </a>
         </div>
       </header>
 

@@ -1,5 +1,6 @@
 import { createIncidentSummary, listIncidents, createIncident } from "../services/incidentService.js";
 import { analyzeIncident } from "../services/openrouterService.js";
+import { Alert } from "../models/Alert.js";
 import Joi from "joi";
 
 export async function getIncidents(req, res, next) {
@@ -75,5 +76,14 @@ export async function postIncidentAnalysis(req, res, next) {
     return res.json(analysis);
   } catch (error) {
     return next(error);
+  }
+}
+
+export async function getAlerts(req, res, next) {
+  try {
+    const alerts = await Alert.find({}).sort({ createdAt: -1 }).limit(20);
+    res.json({ data: alerts });
+  } catch (err) {
+    next(err);
   }
 }

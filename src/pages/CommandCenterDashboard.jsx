@@ -26,12 +26,30 @@ export default function CommandCenterDashboard() {
   const [alertStatus, setAlertStatus]   = useState("connecting");
   const [latestAlertId, setLatestAlertId] = useState("");
   const [liveActivities, setLiveActivities] = useState([]);
+  const [summaryData, setSummaryData]   = useState(null);
 
   useEffect(() => {
     // Fetch initial alerts
+    fetch('/api/alerts')
+      .then(res => res.json())
+      .then(d => {
+        if (d.data && d.data.length > 0) {
+          setAlerts(d.data.slice(0, 8));
+          setLiveActivities(d.data.map(a => ({
+            id: `init-${a.id}`,
+            time: new Date(a.createdAt || Date.now()).toLocaleTimeString("en-US", { hour12: false }),
+            event: `[AI] ${a.title} — ${a.action}`,
+            type: a.severity?.toLowerCase() ?? "info",
+          })).slice(0, 5));
+        }
+      })
+      .catch(console.error);
+
+    // Fetch initial summary
     fetch('/api/summary')
       .then(res => res.json())
-      .catch(console.error); // Basic fetch just to warm up API if needed
+      .then(d => setSummaryData(d))
+      .catch(console.error);
 
     const socket = io(socketConfig.url, {
       path: socketConfig.path,
@@ -59,15 +77,29 @@ export default function CommandCenterDashboard() {
   }, []);
 
   const metrics = useMemo(() => baseMetrics.map((m) => {
-    if (m.id !== "ai-alerts") return m;
-    const actionRequired = alerts.filter(a => a.severity === "critical" || a.severity === "high").length;
-    return {
-      ...m,
-      value: alerts.length,
-      detail: `${actionRequired} require active dispatch`,
-      trend: alertStatus === "streaming" ? "Live active telemetry" : "Telemetry disconnected",
-    };
-  }), [alerts, alertStatus]);
+    if (m.id === "ai-alerts") {
+      const actionRequired = alerts.filter(a => a.severity === "critical" || a.severity === "high").length;
+      return {
+        ...m,
+        value: alerts.length,
+        detail: `${actionRequired} require active dispatch`,
+        trend: alertStatus === "streaming" ? "Live active telemetry" : "Telemetry disconnected",
+      };
+    }
+    
+    if (!summaryData) return m;
+
+    if (m.id === "active-incidents") {
+      return { ...m, value: summaryData.incidents.active, detail: `${summaryData.incidents.critical} critical severity` };
+    }
+    if (m.id === "displaced-persons") {
+      return { ...m, value: summaryData.casualties.displaced, detail: `${summaryData.shelters.open} shelters active` };
+    }
+    if (m.id === "hospital-load") {
+      return { ...m, value: `${summaryData.hospitals.critical}`, detail: "Facilities >90% capacity" };
+    }
+    return m;
+  }), [alerts, alertStatus, summaryData]);
 
   const criticalAlertCount = alerts.filter(a => a.severity === "critical").length;
 

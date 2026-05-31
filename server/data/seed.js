@@ -21,7 +21,7 @@ export const seedDatabaseIfEmpty = async () => {
         ...inc.location,
         coordinates: {
           type: "Point",
-          coordinates: [inc.location.longitude, inc.location.latitude]
+          coordinates: [inc.location?.longitude || 0, inc.location?.latitude || 0]
         }
       }
     }));
@@ -33,7 +33,7 @@ export const seedDatabaseIfEmpty = async () => {
         ...h.location,
         coordinates: {
           type: "Point",
-          coordinates: [h.location.longitude, h.location.latitude]
+          coordinates: [h.location?.longitude || 0, h.location?.latitude || 0]
         }
       }
     }));
@@ -45,7 +45,7 @@ export const seedDatabaseIfEmpty = async () => {
         ...s.location,
         coordinates: {
           type: "Point",
-          coordinates: [s.location.longitude, s.location.latitude]
+          coordinates: [s.location?.longitude || 0, s.location?.latitude || 0]
         }
       }
     }));
@@ -57,7 +57,7 @@ export const seedDatabaseIfEmpty = async () => {
         ...a.currentLocation,
         coordinates: {
           type: "Point",
-          coordinates: [a.currentLocation.longitude, a.currentLocation.latitude]
+          coordinates: [a.currentLocation?.longitude || 0, a.currentLocation?.latitude || 0]
         }
       }
     }));
