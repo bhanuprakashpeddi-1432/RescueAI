@@ -1,4 +1,5 @@
 import { alertScenarios } from "../data/mockData.js";
+import { Alert } from "../models/Alert.js";
 
 let nextId = 1;
 
@@ -14,19 +15,23 @@ function createRandomAlert() {
 }
 
 function nextDelay() {
-  // Random interval between 4.5 s and 10 s for realistic pacing
   return 4500 + Math.floor(Math.random() * 5500);
 }
 
 export function startAlertSimulator(io) {
   let timeoutId;
 
-  function broadcastAlert() {
-    io.emit("emergency-alert", createRandomAlert());
+  async function broadcastAlert() {
+    const alertData = createRandomAlert();
+    try {
+      await Alert.create(alertData);
+    } catch (error) {
+      console.error("Failed to save simulated alert to DB:", error.message);
+    }
+    io.emit("emergency-alert", alertData);
     timeoutId = setTimeout(broadcastAlert, nextDelay());
   }
 
-  // First alert arrives after 2 s so the UI sees it quickly on connect
   timeoutId = setTimeout(broadcastAlert, 2000);
 
   return () => clearTimeout(timeoutId);

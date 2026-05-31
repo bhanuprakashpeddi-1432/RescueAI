@@ -2,8 +2,13 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import app from "./app.js";
 import { env } from "./config/env.js";
+import { connectDB } from "./config/db.js";
+import { seedDatabaseIfEmpty } from "./data/seed.js";
 import { startAlertSimulator } from "./services/alertSimulator.js";
 import { setSocketIo } from "./controllers/agentController.js";
+
+// Connect to MongoDB and seed if necessary
+connectDB().then(() => seedDatabaseIfEmpty());
 
 const server = createServer(app);
 const io = new Server(server, {

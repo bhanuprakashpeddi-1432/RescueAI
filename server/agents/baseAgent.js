@@ -113,14 +113,16 @@ export class BaseAgent {
     );
   }
 
-  /**
-   * Parse and validate raw LLM output string.
-   * Override to add field-level validation.
-   * @param {string} raw
-   * @returns {object}
-   */
   parseOutput(raw) {
-    const parsed = JSON.parse(raw);
+    let cleanRaw = raw.trim();
+    if (cleanRaw.startsWith("```json")) {
+      cleanRaw = cleanRaw.replace(/^```json\s*/, "");
+      cleanRaw = cleanRaw.replace(/\s*```$/, "");
+    } else if (cleanRaw.startsWith("```")) {
+      cleanRaw = cleanRaw.replace(/^```\s*/, "");
+      cleanRaw = cleanRaw.replace(/\s*```$/, "");
+    }
+    const parsed = JSON.parse(cleanRaw);
     return parsed;
   }
 

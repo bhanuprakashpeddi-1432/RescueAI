@@ -15,5 +15,6 @@ export const env = {
   clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
   openRouterApiKey: process.env.OPENROUTER_API_KEY,
   openRouterModel: process.env.OPENROUTER_MODEL ?? "meta-llama/llama-3.3-70b-instruct",
+  mongoUri: process.env.MONGO_URI ?? "mongodb://localhost:27017/rescueai",
   nodeEnv: process.env.NODE_ENV ?? "development",
 };

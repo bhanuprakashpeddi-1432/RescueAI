@@ -1,5 +1,9 @@
 import cors from "cors";
 import express from "express";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import xss from "xss-clean";
+import rateLimit from "express-rate-limit";
 import fs from "node:fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -12,6 +16,7 @@ import agentRoutes from "./routes/agentRoutes.js";
 import sitRepRoutes from "./routes/sitRepRoutes.js";
 import riskPredictionRoutes from "./routes/riskPredictionRoutes.js";
 import resourceAllocationRoutes from "./routes/resourceAllocationRoutes.js";
+import broadcastGeneratorRoutes from "./routes/broadcastGeneratorRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,12 +24,26 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.disable("x-powered-by");
+
+// Security Middlewares
+app.use(helmet());
+app.use(mongoSanitize());
+app.use(xss());
+
 app.use(
   cors({
     origin: env.clientOrigin,
   }),
 );
 app.use(express.json({ limit: "1mb" }));
+
+// Rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again after 15 minutes"
+});
+app.use("/api", apiLimiter);
 
 function healthHandler(req, res) {
   res.json({
@@ -50,6 +69,7 @@ app.use("/api", agentRoutes);
 app.use("/api", sitRepRoutes);
 app.use("/api", riskPredictionRoutes);
 app.use("/api", resourceAllocationRoutes);
+app.use("/api/broadcast", broadcastGeneratorRoutes);
 
 // Serve frontend assets if built
 const distPath = path.join(__dirname, "../dist");
